@@ -257,18 +257,29 @@ footer { display:flex; justify-content:space-between; padding:22px 7%; font-size
 .wash-window {
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
   overflow: hidden;
   pointer-events: none;
   background: #154468;
 }
 .wash-drum {
-  grid-area: 1 / 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  /* Keep the nearest rotating edge beyond all four viewport corners. */
   width: 145vmax;
-  height: 145vmax;
+  width: calc(hypot(100vw, 100dvh) + 12px);
+  aspect-ratio: 1;
   background: center / cover url("assets/wash-cycle.jpg");
   animation: drum-spin 48s linear infinite;
+}
+.wash-window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 49% 48%, transparent 58%, rgb(9 40 62 / 22%) 100%),
+    linear-gradient(116deg, transparent 5%, rgb(230 250 255 / 14%) 10%, transparent 16%);
 }
 .wash-bubbles {
   position: absolute;
