@@ -107,7 +107,7 @@
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
-  padding: clamp(0px, 2.8vw, 40px);
+  padding: clamp(20px, 4.5vw, 78px);
   color: var(--ink);
   background: #dbeaf7;
   font: 400 16px/1.55 Thicccboi, Arial, sans-serif;
@@ -226,7 +226,7 @@ nav a:hover, footer a:hover { text-decoration: underline; }
 .reviews article p { margin: 0; }
 footer { display:flex; justify-content:space-between; padding:22px 7%; font-size:14px; }
 @media(max-width:720px) {
-  body { padding:0; }
+  body { padding: 12px 9px; }
   header { padding:14px 5%; flex-wrap:wrap; gap:6px; }
   nav { order:3; width:100%; justify-content:space-between; padding:6px 0; background:transparent; }
   .opening { display:flex; flex-direction:column; min-height:0; padding-top:94px; }
@@ -252,4 +252,36 @@ footer { display:flex; justify-content:space-between; padding:22px 7%; font-size
 @media (max-width: 720px) {
   .reviews .columns { gap: 22px; }
   .reviews article { padding-inline: 18px; }
+}
+
+.wash-window {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  background: #154468;
+}
+.wash-drum {
+  grid-area: 1 / 1;
+  width: 145vmax;
+  height: 145vmax;
+  background: center / cover url("assets/wash-cycle.jpg");
+  animation: drum-spin 48s linear infinite;
+}
+.wash-bubbles {
+  position: absolute;
+  inset: -100px 0;
+  background-image:
+    radial-gradient(circle at 30px 34px, #fff9 1px, transparent 3px),
+    radial-gradient(circle at 34px 38px, transparent 6px, #e3faff99 7px, transparent 9px),
+    radial-gradient(circle at 116px 110px, transparent 3px, #dff9ff99 4px, transparent 6px);
+  background-size: 197px 173px;
+  animation: bubble-drift 9s linear infinite;
+}
+@keyframes drum-spin { to { transform: rotate(1turn); } }
+@keyframes bubble-drift { to { background-position: 197px -173px; } }
+@media (prefers-reduced-motion: reduce) {
+  .wash-drum, .wash-bubbles { animation: none; }
 }
