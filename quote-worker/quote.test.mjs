@@ -51,10 +51,16 @@ test('SMTP authenticates over TLS, fixes sender/recipient and replies to submitt
    return {readable,writable,close:async()=>{closed=true;rc.close();}};
  };
  await deliver(connect,details,{PURELYMAIL_APP_PASSWORD:'fake-only'});
+ assert.equal(sent[1],'AUTH PLAIN '+Buffer.from('\0hello@wash.ooo\0fake-only').toString('base64')+'\r\n');
  assert.equal(sent[2],'MAIL FROM:<hello@wash.ooo>\r\n');
  assert.equal(sent[3],'RCPT TO:<hello@wash.ooo>\r\n');
  assert.match(sent[5],/Reply-To: marta@example.com/);
  const body=sent[5].split('\r\n\r\n')[1].split('\r\n.')[0].replace(/\r\n/g,'');
  assert.match(Buffer.from(body,'base64').toString('utf-8'),/Marta O’Neil/);
  assert.equal(closed,true);
+ sent=[];
+ await deliver(connect,details,{PURELYMAIL_APP_PASSWORD:'fake-only',PURELYMAIL_SMTP_USERNAME:'owner@example.com'});
+ assert.equal(sent[1],'AUTH PLAIN '+Buffer.from('\0owner@example.com\0fake-only').toString('base64')+'\r\n');
+ assert.equal(sent[2],'MAIL FROM:<hello@wash.ooo>\r\n');
+ assert.equal(sent[3],'RCPT TO:<hello@wash.ooo>\r\n');
 });
