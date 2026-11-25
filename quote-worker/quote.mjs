@@ -117,7 +117,8 @@ export function handler(sendMail, { live = () => true } = {}) {
 }
 
 export async function deliver(connect, values, env) {
-  if (!env.PURELYMAIL_APP_PASSWORD) throw Error('Mailer not configured');
+  const login = env.PURELYMAIL_SMTP_USERNAME || owner;
+  if (!env.PURELYMAIL_APP_PASSWORD || !emailOK(login)) throw Error('Mailer not configured');
   const socket=connect({hostname:'smtp.purelymail.com',port:465},{secureTransport:'on'});
   const reader=socket.readable.getReader(), writer=socket.writable.getWriter();
   const decoder=new TextDecoder();
@@ -152,7 +153,7 @@ export async function deliver(connect, values, env) {
   try {
     await Promise.race([(async()=>{
       await read([220]); await command('EHLO wash.ooo',[250]);
-      await command('AUTH PLAIN '+base64('\0'+owner+'\0'+env.PURELYMAIL_APP_PASSWORD),[235]);
+      await command('AUTH PLAIN '+base64('\0'+login+'\0'+env.PURELYMAIL_APP_PASSWORD),[235]);
       await command('MAIL FROM:<'+owner+'>',[250]);
       await command('RCPT TO:<'+owner+'>',[250,251]);
       await command('DATA',[354]);
